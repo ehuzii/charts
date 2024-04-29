@@ -26,7 +26,7 @@ global:
   ##
   compatibility:
     ## Compatibility adaptations for Openshift
-    ##
+   ##
     openshift:
       ## @param global.compatibility.openshift.adaptSecurityContext Adapt the securityContext sections of the deployment to make them compatible with Openshift restricted-v2 SCC: remove runAsUser, runAsGroup and fsGroup and let the platform use their allowed default IDs. Possible values: auto (apply if the detected running cluster is Openshift), force (perform the adaptation always), disabled (do not perform adaptation)
       ##
@@ -812,7 +812,7 @@ replica:
   podManagementPolicy: ""
   ## @param replica.automountServiceAccountToken Mount Service Account token in pod
   ##
-  automountServiceAccountToken: false
+  automountServiceAccountToken: true
   ## @param replica.hostAliases Redis&reg; replicas pods host aliases
   ## https://kubernetes.io/docs/concepts/services-networking/add-entries-to-pod-etc-hosts-with-host-aliases/
   ##
@@ -1094,7 +1094,7 @@ sentinel:
   ## IMPORTANT: this will disable the master and replicas services and
   ## create a single Redis&reg; service exposing both the Redis and Sentinel ports
   ##
-  enabled: false
+  enabled: true
   ## Bitnami Redis&reg; Sentinel image version
   ## ref: https://hub.docker.com/r/bitnami/redis-sentinel/tags/
   ## @param sentinel.image.registry [default: REGISTRY_NAME] Redis&reg; Sentinel image registry
@@ -1387,11 +1387,24 @@ sentinel:
     ## @param sentinel.service.createMaster Enable master service pointing to the current master (experimental)
     ## NOTE: rbac.create need to be set to true
     ##
-    createMaster: false
-
-    ## @param sentinel.service.loadBalancerIP Redis&reg; Sentinel service Load Balancer IP
-    ## ref: https://kubernetes.io/docs/concepts/services-networking/service/#internal-load-balancer
+    createMaster: true
+    ## Redis&reg; Sentinel masterService parameters
     ##
+    masterService:
+      ## @param sentinel.service.masterService.clusterIP Redis&reg; Sentinel service Cluster IP
+      ##
+      clusterIP: ""
+      ## @param sentinel.service.masterService.type Redis&reg; Sentinel masterService type
+      ##
+      type: LoadBalancer
+      ## @param sentinel.service.masterService.loadBalancerIP Redis&reg; Sentinel service Load Balancer IP
+      ## ref: https://kubernetes.io/docs/concepts/services-networking/service/#internal-load-balancer
+      ##
+      loadBalancerIP: "10.10.10.10"
+      ## @param sentinel.service.loadBalancerClass sentinel service Load Balancer class if service type is `LoadBalancer` (optional, cloud specific)
+      ## ref: https://kubernetes.io/docs/concepts/services-networking/service/#type-loadbalancer
+      ##
+
     loadBalancerIP: ""
     ## @param sentinel.service.loadBalancerClass sentinel service Load Balancer class if service type is `LoadBalancer` (optional, cloud specific)
     ## ref: https://kubernetes.io/docs/concepts/services-networking/service/#type-loadbalancer
@@ -1515,7 +1528,7 @@ podSecurityPolicy:
 rbac:
   ## @param rbac.create Specifies whether RBAC resources should be created
   ##
-  create: false
+  create: true
   ## @param rbac.rules Custom RBAC rules to set
   ## e.g:
   ## rules:
